@@ -17,17 +17,19 @@
  *
  */
 
-#include <fastdds/dds/core/Entity.hpp>
-
 #include <fastdds/core/condition/StatusConditionImpl.hpp>
+#include <fastdds/dds/core/Entity.hpp>
 
 namespace eprosima {
 namespace fastdds {
 namespace dds {
 
-const StatusMask& Entity::get_status_changes() const
-{
-    return status_condition_.get_impl()->get_raw_status();
+const StatusMask& Entity::get_status_changes() const {
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "Entity::get_status_changes()\t%p\n",
+          status_condition_.get_impl()->get_raw_status());
+  fclose(fp);
+  return status_condition_.get_impl()->get_raw_status();
 }
 
 }  // namespace dds

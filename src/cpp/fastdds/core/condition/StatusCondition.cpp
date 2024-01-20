@@ -17,10 +17,10 @@
  *
  */
 
-#include <fastdds/dds/core/condition/StatusCondition.hpp>
 #include <fastrtps/types/TypesBase.h>
 
 #include <fastdds/core/condition/StatusConditionImpl.hpp>
+#include <fastdds/dds/core/condition/StatusCondition.hpp>
 
 namespace eprosima {
 namespace fastdds {
@@ -28,37 +28,30 @@ namespace dds {
 
 using eprosima::fastrtps::types::ReturnCode_t;
 
-StatusCondition::StatusCondition(
-        Entity* parent)
-    : Condition()
-    , entity_(parent)
-    , impl_(new detail::StatusConditionImpl(notifier_.get()))
-{
+StatusCondition::StatusCondition(Entity* parent)
+    : Condition(),
+      entity_(parent),
+      impl_(new detail::StatusConditionImpl(notifier_.get())) {}
+
+StatusCondition::~StatusCondition() {}
+
+bool StatusCondition::get_trigger_value() const {
+  return impl_->get_trigger_value();
 }
 
-StatusCondition::~StatusCondition()
-{
+ReturnCode_t StatusCondition::set_enabled_statuses(const StatusMask& mask) {
+  return impl_->set_enabled_statuses(mask);
 }
 
-bool StatusCondition::get_trigger_value() const
-{
-    return impl_->get_trigger_value();
+const StatusMask& StatusCondition::get_enabled_statuses() const {
+  return impl_->get_enabled_statuses();
 }
 
-ReturnCode_t StatusCondition::set_enabled_statuses(
-        const StatusMask& mask)
-{
-    return impl_->set_enabled_statuses(mask);
-}
-
-const StatusMask& StatusCondition::get_enabled_statuses() const
-{
-    return impl_->get_enabled_statuses();
-}
-
-Entity* StatusCondition::get_entity() const
-{
-    return entity_;
+Entity* StatusCondition::get_entity() const {
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "StatusCondition::get_entity\t%p\n", entity_);
+  fclose(fp);
+  return entity_;
 }
 
 }  // namespace dds

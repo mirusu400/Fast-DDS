@@ -16,38 +16,30 @@
  * @file GuardCondition.cpp
  */
 
-#include <fastdds/dds/core/condition/GuardCondition.hpp>
-
 #include <fastdds/core/condition/ConditionNotifier.hpp>
+#include <fastdds/dds/core/condition/GuardCondition.hpp>
 
 namespace eprosima {
 namespace fastdds {
 namespace dds {
 
-GuardCondition::GuardCondition()
-    : trigger_value_(false)
-{
-}
+GuardCondition::GuardCondition() : trigger_value_(false) {}
 
-GuardCondition::~GuardCondition()
-{
-}
+GuardCondition::~GuardCondition() {}
 
-bool GuardCondition::get_trigger_value() const
-{
-    return trigger_value_.load();
-}
+bool GuardCondition::get_trigger_value() const { return trigger_value_.load(); }
 
-ReturnCode_t GuardCondition::set_trigger_value(
-        bool value)
-{
-    bool old_value = trigger_value_.exchange(value);
-    if (!old_value && value)
-    {
-        notifier_->notify();
-    }
+ReturnCode_t GuardCondition::set_trigger_value(bool value) {
+  bool old_value = trigger_value_.exchange(value);
+  if (!old_value && value) {
+    notifier_->notify();
+  }
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "GuardCondition::set_trigger_value\t%d\n",
+          ReturnCode_t::RETCODE_OK);
+  fclose(fp);
 
-    return ReturnCode_t::RETCODE_OK;
+  return ReturnCode_t::RETCODE_OK;
 }
 
 }  // namespace dds

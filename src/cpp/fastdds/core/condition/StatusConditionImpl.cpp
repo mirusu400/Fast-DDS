@@ -18,83 +18,72 @@
 
 #include "StatusConditionImpl.hpp"
 
-#include <mutex>
-
 #include <fastdds/core/condition/ConditionNotifier.hpp>
+#include <mutex>
 
 namespace eprosima {
 namespace fastdds {
 namespace dds {
 namespace detail {
 
-StatusConditionImpl::StatusConditionImpl(
-        ConditionNotifier* notifier)
-    : mask_(StatusMask::all())
-    , status_(StatusMask::none())
-    , notifier_(notifier)
-{
+StatusConditionImpl::StatusConditionImpl(ConditionNotifier* notifier)
+    : mask_(StatusMask::all()),
+      status_(StatusMask::none()),
+      notifier_(notifier) {}
+
+StatusConditionImpl::~StatusConditionImpl() {}
+
+bool StatusConditionImpl::get_trigger_value() const {
+  std::lock_guard<std::mutex> guard(mutex_);
+  return (mask_ & status_).any();
 }
 
-StatusConditionImpl::~StatusConditionImpl()
-{
-}
-
-bool StatusConditionImpl::get_trigger_value() const
-{
+ReturnCode_t StatusConditionImpl::set_enabled_statuses(const StatusMask& mask) {
+  bool notify = false;
+  {
     std::lock_guard<std::mutex> guard(mutex_);
-    return (mask_ & status_).any();
+    bool old_trigger = (mask_ & status_).any();
+    mask_ = mask;
+    bool new_trigger = (mask_ & status_).any();
+    notify = !old_trigger && new_trigger;
+  }
+
+  if (notify) {
+    notifier_->notify();
+  }
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "StatusConditionImpl::\t%d\n", ReturnCode_t::RETCODE_OK);
+  fclose(fp);
+  return ReturnCode_t::RETCODE_OK;
 }
 
-ReturnCode_t StatusConditionImpl::set_enabled_statuses(
-        const StatusMask& mask)
-{
+const StatusMask& StatusConditionImpl::get_enabled_statuses() const {
+  std::lock_guard<std::mutex> guard(mutex_);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "StatusConditionImpl::\t%p\n", &mask_);
+  fclose(fp);
+  return mask_;
+}
+
+void StatusConditionImpl::set_status(const StatusMask& status,
+                                     bool trigger_value) {
+  if (trigger_value) {
     bool notify = false;
     {
-        std::lock_guard<std::mutex> guard(mutex_);
-        bool old_trigger = (mask_ & status_).any();
-        mask_ = mask;
-        bool new_trigger = (mask_ & status_).any();
-        notify = !old_trigger && new_trigger;
+      std::lock_guard<std::mutex> guard(mutex_);
+      bool old_trigger = (mask_ & status_).any();
+      status_ |= status;
+      bool new_trigger = (mask_ & status_).any();
+      notify = !old_trigger && new_trigger;
     }
 
-    if (notify)
-    {
-        notifier_->notify();
+    if (notify) {
+      notifier_->notify();
     }
-    return ReturnCode_t::RETCODE_OK;
-}
-
-const StatusMask& StatusConditionImpl::get_enabled_statuses() const
-{
+  } else {
     std::lock_guard<std::mutex> guard(mutex_);
-    return mask_;
-}
-
-void StatusConditionImpl::set_status(
-        const StatusMask& status,
-        bool trigger_value)
-{
-    if (trigger_value)
-    {
-        bool notify = false;
-        {
-            std::lock_guard<std::mutex> guard(mutex_);
-            bool old_trigger = (mask_ & status_).any();
-            status_ |= status;
-            bool new_trigger = (mask_ & status_).any();
-            notify = !old_trigger && new_trigger;
-        }
-
-        if (notify)
-        {
-            notifier_->notify();
-        }
-    }
-    else
-    {
-        std::lock_guard<std::mutex> guard(mutex_);
-        status_ &= ~status;
-    }
+    status_ &= ~status;
+  }
 }
 
 }  // namespace detail
