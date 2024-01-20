@@ -34,60 +34,59 @@ class TopicDescriptionImpl;
  *
  * @ingroup FASTDDS_MODULE
  */
-class TopicDescription
-{
-public:
+class TopicDescription {
+ public:
+  /**
+   * Get the DomainParticipant to which the TopicDescription belongs.
+   *
+   * @return The DomainParticipant to which the TopicDescription belongs.
+   */
+  virtual DomainParticipant* get_participant() const {
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "TopicDescription::get_participant\t0\n");
+    fclose(fp);
+    return 0;
+  }
 
-    /**
-     * Get the DomainParticipant to which the TopicDescription belongs.
-     *
-     * @return The DomainParticipant to which the TopicDescription belongs.
-     */
-    virtual DomainParticipant* get_participant() const = 0;
+  /**
+   * Get the name used to create this TopicDescription.
+   *
+   * @return the name used to create this TopicDescription.
+   */
+  const std::string& get_name() const {
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "TopicDescription::get_name\t%s\n", name_.c_str());
+    fclose(fp);
+    return name_;
+  }
 
-    /**
-     * Get the name used to create this TopicDescription.
-     *
-     * @return the name used to create this TopicDescription.
-     */
-    const std::string& get_name() const
-    {
-        return name_;
-    }
+  /**
+   * Get the associated type name.
+   *
+   * @return the type name.
+   */
+  const std::string& get_type_name() const {
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "TopicDescription::get_type_name\t%s\n", type_name_.c_str());
+    fclose(fp);
+    return type_name_;
+  }
 
-    /**
-     * Get the associated type name.
-     *
-     * @return the type name.
-     */
-    const std::string& get_type_name() const
-    {
-        return type_name_;
-    }
+  virtual TopicDescriptionImpl* get_impl() const = 0;
 
-    virtual TopicDescriptionImpl* get_impl() const = 0;
+ protected:
+  TopicDescription(const std::string& name, const std::string& type_name)
+      : name_(name), type_name_(type_name) {}
 
-protected:
+  virtual ~TopicDescription() {}
 
-    TopicDescription(
-            const std::string& name,
-            const std::string& type_name)
-        : name_(name)
-        , type_name_(type_name)
-    {
-    }
+ protected:
+  //! Name that allows the TopicDescription to be retrieved locally
+  std::string name_;
 
-    virtual ~TopicDescription()
-    {
-    }
-
-protected:
-
-    //! Name that allows the TopicDescription to be retrieved locally
-    std::string name_;
-
-    //! Name that defines a unique resulting type for the publication or the subscription
-    std::string type_name_;
+  //! Name that defines a unique resulting type for the publication or the
+  //! subscription
+  std::string type_name_;
 };
 
 } /* namespace dds */

@@ -17,11 +17,10 @@
  * @file TypeSupport.cpp
  */
 
-#include <fastdds/dds/topic/TypeSupport.hpp>
-#include <fastdds/dds/domain/DomainParticipant.hpp>
-
 #include <fastcdr/exceptions/Exception.h>
 
+#include <fastdds/dds/domain/DomainParticipant.hpp>
+#include <fastdds/dds/topic/TypeSupport.hpp>
 
 namespace eprosima {
 namespace fastdds {
@@ -29,51 +28,42 @@ namespace dds {
 
 const InstanceHandle_t HANDLE_NIL;
 
-ReturnCode_t TypeSupport::register_type(
-        DomainParticipant* participant,
-        std::string type_name) const
-{
-    return participant->register_type(*this, type_name.empty() ? get_type_name() : type_name);
+ReturnCode_t TypeSupport::register_type(DomainParticipant* participant,
+                                        std::string type_name) const {
+  ReturnCode_t ret_val = participant->register_type(
+      *this, type_name.empty() ? get_type_name() : type_name);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "TypeSupport::register_type\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
-ReturnCode_t TypeSupport::register_type(
-        DomainParticipant* participant) const
-{
-    return participant->register_type(*this, get_type_name());
+ReturnCode_t TypeSupport::register_type(DomainParticipant* participant) const {
+  return participant->register_type(*this, get_type_name());
 }
 
-bool TypeSupport::serialize(
-        void* data,
-        fastrtps::rtps::SerializedPayload_t* payload)
-{
-    bool result = false;
-    try
-    {
-        result = get()->serialize(data, payload);
-    }
-    catch (eprosima::fastcdr::exception::Exception&)
-    {
-        result = false;
-    }
+bool TypeSupport::serialize(void* data,
+                            fastrtps::rtps::SerializedPayload_t* payload) {
+  bool result = false;
+  try {
+    result = get()->serialize(data, payload);
+  } catch (eprosima::fastcdr::exception::Exception&) {
+    result = false;
+  }
 
-    return result;
+  return result;
 }
 
-bool TypeSupport::deserialize(
-        fastrtps::rtps::SerializedPayload_t* payload,
-        void* data)
-{
-    bool result = false;
-    try
-    {
-        result = get()->deserialize(payload, data);
-    }
-    catch (eprosima::fastcdr::exception::Exception&)
-    {
-        result = false;
-    }
+bool TypeSupport::deserialize(fastrtps::rtps::SerializedPayload_t* payload,
+                              void* data) {
+  bool result = false;
+  try {
+    result = get()->deserialize(payload, data);
+  } catch (eprosima::fastcdr::exception::Exception&) {
+    result = false;
+  }
 
-    return result;
+  return result;
 }
 
 }  // namespace dds
