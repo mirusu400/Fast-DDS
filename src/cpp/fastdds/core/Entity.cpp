@@ -26,7 +26,7 @@ namespace dds {
 
 const StatusMask& Entity::get_status_changes() const {
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "Entity::get_status_changes()\t%p\n",
+  fprintf(fp, "Entity::get_status_changes\t%p\n",
           status_condition_.get_impl()->get_raw_status());
   fclose(fp);
   return status_condition_.get_impl()->get_raw_status();

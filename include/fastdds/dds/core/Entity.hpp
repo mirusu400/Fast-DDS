@@ -53,7 +53,7 @@ class Entity {
   virtual fastrtps::types::ReturnCode_t enable() {
     enable_ = true;
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-    fprintf(fp, "Entity::enable()\t%d\n",
+    fprintf(fp, "Entity::enable\t%d\n",
             fastrtps::types::ReturnCode_t::RETCODE_OK);
     fclose(fp);
     return fastrtps::types::ReturnCode_t::RETCODE_OK;
@@ -95,7 +95,7 @@ class Entity {
    */
   const InstanceHandle_t& get_instance_handle() const {
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-    fprintf(fp, "Entity::get_instance_handle()\t%p\n", &instance_handle_);
+    fprintf(fp, "Entity::get_instance_handle\t%p\n", &instance_handle_);
     fclose(fp);
     return instance_handle_;
   }

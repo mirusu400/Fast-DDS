@@ -51,7 +51,7 @@ ContentFilteredTopic::~ContentFilteredTopic() {
 
 Topic* ContentFilteredTopic::get_related_topic() const {
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "ContentFilteredTopic::get_related_topic()\t%p\n",
+  fprintf(fp, "ContentFilteredTopic::get_related_topic\t%p\n",
           impl_->related_topic);
   fclose(fp);
   return impl_->related_topic;
@@ -70,7 +70,7 @@ ReturnCode_t ContentFilteredTopic::get_expression_parameters(
     expression_parameters.emplace_back(param.c_str());
   }
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "ContentFilteredTopic::get_expression_parameters()\t%d\n",
+  fprintf(fp, "ContentFilteredTopic::get_expression_parameters\t%d\n",
           (int)ReturnCode_t::RETCODE_OK);
   fclose(fp);
   return ReturnCode_t::RETCODE_OK;
@@ -81,7 +81,7 @@ ReturnCode_t ContentFilteredTopic::set_expression_parameters(
   ReturnCode_t ret_val =
       impl_->set_expression_parameters(nullptr, expression_parameters);
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "ContentFilteredTopic::set_expression_parameters()\t%d\n",
+  fprintf(fp, "ContentFilteredTopic::set_expression_parameters\t%d\n",
           ret_val);
   fclose(fp);
   return ret_val;
