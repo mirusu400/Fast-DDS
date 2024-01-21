@@ -142,7 +142,7 @@ class TypeSupport : public std::shared_ptr<fastdds::dds::TopicDataType> {
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
     fprintf(fp, "TypeSupport::get_type_name\t%s\n", name.c_str());
     fclose(fp);
-    return name;
+    return get()->m_topicDataTypeName;
   }
 
   /**
