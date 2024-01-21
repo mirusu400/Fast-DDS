@@ -37,23 +37,39 @@ bool ReadCondition::get_trigger_value() const noexcept
 DataReader* ReadCondition::get_datareader() const noexcept
 {
     assert((bool)impl_);
-    return impl_->get_datareader();
+    DataReader* dr = impl_->get_datareader();
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "ReadConditionImpl::get_datareader\t%p\n", dr);
+    fclose(fp);
+    return dr;
 }
 
 SampleStateMask ReadCondition::get_sample_state_mask() const noexcept
 {
     assert((bool)impl_);
-    return impl_->get_sample_state_mask();
+    SampleStateMask ssm = impl_->get_sample_state_mask();
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "ReadConditionImpl::get_sample_state_mask\t%d\n", ssm);
+    fclose(fp);
+    return ssm;
 }
 
 ViewStateMask ReadCondition::get_view_state_mask() const noexcept
 {
     assert((bool)impl_);
-    return impl_->get_view_state_mask();
+    ViewStateMask vsm = impl_->get_view_state_mask();
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "ReadConditionImpl::get_view_state_mask\t%d\n", vsm);
+    fclose(fp);
+    return vsm;
 }
 
 InstanceStateMask ReadCondition::get_instance_state_mask() const noexcept
 {
     assert((bool)impl_);
-    return impl_->get_instance_state_mask();
+    InstanceStateMask ism = impl_->get_instance_state_mask();
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "ReadConditionImpl::get_instance_state_mask\t%d\n", ism);
+    fclose(fp);
+    return ism;
 }

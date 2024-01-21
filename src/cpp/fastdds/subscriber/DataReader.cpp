@@ -86,7 +86,13 @@ ReturnCode_t DataReader::read(
         ViewStateMask view_states,
         InstanceStateMask instance_states)
 {
-    return impl_->read(data_values, sample_infos, max_samples, sample_states, view_states, instance_states);
+  ReturnCode_t ret_val =
+      impl_->read(data_values, sample_infos, max_samples, sample_states,
+                  view_states, instance_states);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::read\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::read_w_condition(
@@ -97,9 +103,20 @@ ReturnCode_t DataReader::read_w_condition(
 {
     if ( nullptr == a_condition )
     {
-        return ReturnCode_t::RETCODE_PRECONDITION_NOT_MET;
+      FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+      fprintf(fp, "DataReaderImpl::read_w_condition\t%d\n",
+              ReturnCode_t::RETCODE_PRECONDITION_NOT_MET);
+      fclose(fp);
+      return ReturnCode_t::RETCODE_PRECONDITION_NOT_MET;
     }
 
+    ReturnCode_t ret_val = read(data_values, sample_infos, max_samples,
+                                a_condition->get_sample_state_mask(),
+                                a_condition->get_view_state_mask(),
+                                a_condition->get_instance_state_mask());
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DataReaderImpl::read_w_condition\t%d\n", ret_val);
+    fclose(fp);
     return read(
         data_values,
         sample_infos,
@@ -118,8 +135,13 @@ ReturnCode_t DataReader::read_instance(
         ViewStateMask view_states,
         InstanceStateMask instance_states)
 {
-    return impl_->read_instance(data_values, sample_infos, max_samples, a_handle, sample_states, view_states,
-                   instance_states);
+  ReturnCode_t ret_val =
+      impl_->read_instance(data_values, sample_infos, max_samples, a_handle,
+                           sample_states, view_states, instance_states);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::read_instance\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::read_next_instance(
@@ -131,8 +153,13 @@ ReturnCode_t DataReader::read_next_instance(
         ViewStateMask view_states,
         InstanceStateMask instance_states)
 {
-    return impl_->read_next_instance(data_values, sample_infos, max_samples, previous_handle, sample_states,
-                   view_states, instance_states);
+  ReturnCode_t ret_val = impl_->read_next_instance(
+      data_values, sample_infos, max_samples, previous_handle, sample_states,
+      view_states, instance_states);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::read_next_instance\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::read_next_instance_w_condition(
@@ -142,19 +169,20 @@ ReturnCode_t DataReader::read_next_instance_w_condition(
         const InstanceHandle_t& previous_handle,
         ReadCondition* a_condition)
 {
-    if ( nullptr == a_condition )
-    {
-        return ReturnCode_t::RETCODE_PRECONDITION_NOT_MET;
-    }
-
-    return read_next_instance(
-        data_values,
-        sample_infos,
-        max_samples,
-        previous_handle,
-        a_condition->get_sample_state_mask(),
-        a_condition->get_view_state_mask(),
-        a_condition->get_instance_state_mask());
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  if (nullptr == a_condition) {
+    fprintf(fp, "DataReaderImpl::read_next_instance_w_condition\t%d\n",
+            ReturnCode_t::RETCODE_PRECONDITION_NOT_MET);
+    fclose(fp);
+    return ReturnCode_t::RETCODE_PRECONDITION_NOT_MET;
+  }
+  ReturnCode_t ret_val = read_next_instance(
+      data_values, sample_infos, max_samples, previous_handle,
+      a_condition->get_sample_state_mask(), a_condition->get_view_state_mask(),
+      a_condition->get_instance_state_mask());
+  fprintf(fp, "DataReaderImpl::read_next_instance_w_condition\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::take(
@@ -165,7 +193,13 @@ ReturnCode_t DataReader::take(
         ViewStateMask view_states,
         InstanceStateMask instance_states)
 {
-    return impl_->take(data_values, sample_infos, max_samples, sample_states, view_states, instance_states);
+  ReturnCode_t ret_val =
+      impl_->take(data_values, sample_infos, max_samples, sample_states,
+                  view_states, instance_states);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::take\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::take_w_condition(
@@ -176,16 +210,21 @@ ReturnCode_t DataReader::take_w_condition(
 {
     if ( nullptr == a_condition )
     {
-        return ReturnCode_t::RETCODE_PRECONDITION_NOT_MET;
+      FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+      fprintf(fp, "DataReaderImpl::take_w_condition\t%d\n",
+              ReturnCode_t::RETCODE_PRECONDITION_NOT_MET);
+      fclose(fp);
+      return ReturnCode_t::RETCODE_PRECONDITION_NOT_MET;
     }
 
-    return take(
-        data_values,
-        sample_infos,
-        max_samples,
-        a_condition->get_sample_state_mask(),
-        a_condition->get_view_state_mask(),
-        a_condition->get_instance_state_mask());
+    ReturnCode_t ret_val = take(data_values, sample_infos, max_samples,
+                                a_condition->get_sample_state_mask(),
+                                a_condition->get_view_state_mask(),
+                                a_condition->get_instance_state_mask());
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DataReaderImpl::take_w_condition\t%d\n", ret_val);
+    fclose(fp);
+    return ret_val;
 }
 
 ReturnCode_t DataReader::take_instance(
@@ -197,8 +236,13 @@ ReturnCode_t DataReader::take_instance(
         ViewStateMask view_states,
         InstanceStateMask instance_states)
 {
-    return impl_->take_instance(data_values, sample_infos, max_samples, a_handle, sample_states, view_states,
-                   instance_states);
+  ReturnCode_t ret_val =
+      impl_->take_instance(data_values, sample_infos, max_samples, a_handle,
+                           sample_states, view_states, instance_states);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::take_instance\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::take_next_instance(
@@ -210,8 +254,13 @@ ReturnCode_t DataReader::take_next_instance(
         ViewStateMask view_states,
         InstanceStateMask instance_states)
 {
-    return impl_->take_next_instance(data_values, sample_infos, max_samples, previous_handle, sample_states,
-                   view_states, instance_states);
+  ReturnCode_t ret_val = impl_->take_next_instance(
+      data_values, sample_infos, max_samples, previous_handle, sample_states,
+      view_states, instance_states);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::take_next_instance\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::take_next_instance_w_condition(
@@ -221,26 +270,32 @@ ReturnCode_t DataReader::take_next_instance_w_condition(
         const InstanceHandle_t& previous_handle,
         ReadCondition* a_condition)
 {
-    if ( nullptr == a_condition )
-    {
-        return ReturnCode_t::RETCODE_PRECONDITION_NOT_MET;
-    }
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  if (nullptr == a_condition) {
+    fprintf(fp, "DataReaderImpl::take_next_instance_w_condition\t%d\n",
+            ReturnCode_t::RETCODE_PRECONDITION_NOT_MET);
+    fclose(fp);
+    return ReturnCode_t::RETCODE_PRECONDITION_NOT_MET;
+  }
+  ReturnCode_t ret_val = take_next_instance(
+      data_values, sample_infos, max_samples, previous_handle,
+      a_condition->get_sample_state_mask(), a_condition->get_view_state_mask(),
+      a_condition->get_instance_state_mask());
+  fprintf(fp, "DataReaderImpl::take_next_instance_w_condition\t%d\n", ret_val);
+  fclose(fp);
 
-    return take_next_instance(
-        data_values,
-        sample_infos,
-        max_samples,
-        previous_handle,
-        a_condition->get_sample_state_mask(),
-        a_condition->get_view_state_mask(),
-        a_condition->get_instance_state_mask());
+  return ret_val;
 }
 
 ReturnCode_t DataReader::return_loan(
         LoanableCollection& data_values,
         SampleInfoSeq& sample_infos)
 {
-    return impl_->return_loan(data_values, sample_infos);
+  ReturnCode_t ret_val = impl_->return_loan(data_values, sample_infos);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::return_loan\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::get_key_value(
@@ -249,27 +304,43 @@ ReturnCode_t DataReader::get_key_value(
 {
     static_cast<void> (key_holder);
     static_cast<void> (handle);
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DataReader::get_key_value\t%d\n",
+            ReturnCode_t::RETCODE_UNSUPPORTED);
+    fclose(fp);
     return ReturnCode_t::RETCODE_UNSUPPORTED;
 }
 
 InstanceHandle_t DataReader::lookup_instance(
         const void* instance) const
 {
-    return impl_->lookup_instance(instance);
+  InstanceHandle_t handle = impl_->lookup_instance(instance);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::lookup_instance\t%p\n", handle);
+  fclose(fp);
+  return handle;
 }
 
 ReturnCode_t DataReader::read_next_sample(
         void* data,
         SampleInfo* info)
 {
-    return impl_->read_next_sample(data, info);
+  ReturnCode_t ret_val = impl_->read_next_sample(data, info);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::read_next_sample\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::take_next_sample(
         void* data,
         SampleInfo* info)
 {
-    return impl_->take_next_sample(data, info);
+  ReturnCode_t ret_val = impl_->take_next_sample(data, info);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::take_next_sample\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::get_first_untaken_info(
@@ -325,13 +396,23 @@ ReturnCode_t DataReader::get_qos(
 ReturnCode_t DataReader::get_requested_deadline_missed_status(
         RequestedDeadlineMissedStatus& status)
 {
-    return impl_->get_requested_deadline_missed_status(status);
+  ReturnCode_t ret_val = impl_->get_requested_deadline_missed_status(status);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::get_requested_deadline_missed_status\t%d\n",
+          ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::get_requested_incompatible_qos_status(
         RequestedIncompatibleQosStatus& status)
 {
-    return impl_->get_requested_incompatible_qos_status(status);
+  ReturnCode_t ret_val = impl_->get_requested_incompatible_qos_status(status);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::get_requested_incompatible_qos_status\t%d\n",
+          ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::set_listener(
@@ -370,25 +451,41 @@ const DataReaderListener* DataReader::get_listener() const
 ReturnCode_t DataReader::get_liveliness_changed_status(
         LivelinessChangedStatus& status) const
 {
-    return impl_->get_liveliness_changed_status(status);
+  ReturnCode_t ret_val = impl_->get_liveliness_changed_status(status);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::get_liveliness_changed_status\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::get_sample_lost_status(
         SampleLostStatus& status) const
 {
-    return impl_->get_sample_lost_status(status);
+  ReturnCode_t ret_val = impl_->get_sample_lost_status(status);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::get_sample_lost_status\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::get_sample_rejected_status(
         SampleRejectedStatus& status) const
 {
-    return impl_->get_sample_rejected_status(status);
+  ReturnCode_t ret_val = impl_->get_sample_rejected_status(status);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::get_sample_rejected_status\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::get_subscription_matched_status(
         SubscriptionMatchedStatus& status) const
 {
-    return impl_->get_subscription_matched_status(status);
+  ReturnCode_t ret_val = impl_->get_subscription_matched_status(status);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::get_subscription_matched_status\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::get_matched_publication_data(
@@ -397,6 +494,10 @@ ReturnCode_t DataReader::get_matched_publication_data(
 {
     static_cast<void> (publication_data);
     static_cast<void> (publication_handle);
+    FILE *fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DataReader::get_matched_publication_data\t%d\n",
+            ReturnCode_t::RETCODE_UNSUPPORTED);
+    fclose(fp);
     return ReturnCode_t::RETCODE_UNSUPPORTED;
     /*
        return impl_->get_matched_publication_data(publication_data, publication_handle);
@@ -407,6 +508,10 @@ ReturnCode_t DataReader::get_matched_publications(
         std::vector<InstanceHandle_t>& publication_handles) const
 {
     static_cast<void> (publication_handles);
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DataReader::get_matched_publications\t%d\n",
+            ReturnCode_t::RETCODE_UNSUPPORTED);
+    fclose(fp);
     return ReturnCode_t::RETCODE_UNSUPPORTED;
     /*
        return impl_->get_matched_publication_data(publication_handles);
@@ -418,7 +523,13 @@ ReadCondition* DataReader::create_readcondition(
         ViewStateMask view_states,
         InstanceStateMask instance_states)
 {
-    return impl_->create_readcondition(sample_states, view_states, instance_states);
+  ReadCondition* condition =
+      impl_->create_readcondition(sample_states, view_states, instance_states);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::create_readcondition\t%p\n", condition);
+  fclose(fp);
+  return impl_->create_readcondition(sample_states, view_states,
+                                     instance_states);
 }
 
 QueryCondition* DataReader::create_querycondition(
@@ -434,6 +545,9 @@ QueryCondition* DataReader::create_querycondition(
     static_cast<void> (instance_states);
     static_cast<void> (query_expression);
     static_cast<void> (query_parameters);
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DataReader::create_querycondition\t%p\n", nullptr);
+    fclose(fp);
     return nullptr;
     /*
        return impl_->create_querycondition(sample_states, view_states, instance_states, query_expression, query_parameters);
@@ -443,23 +557,39 @@ QueryCondition* DataReader::create_querycondition(
 ReturnCode_t DataReader::delete_readcondition(
         ReadCondition* a_condition)
 {
-    return impl_->delete_readcondition(a_condition);
+  ReturnCode_t ret_val = impl_->delete_readcondition(a_condition);
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::delete_readcondition\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 ReturnCode_t DataReader::delete_contained_entities()
 {
-    return impl_->delete_contained_entities();
+  ReturnCode_t ret_val = impl_->delete_contained_entities();
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::delete_contained_entities\t%d\n", ret_val);
+  fclose(fp);
+  return ret_val;
 }
 
 const Subscriber* DataReader::get_subscriber() const
 {
-    return impl_->get_subscriber();
+  const Subscriber* subscriber = impl_->get_subscriber();
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::get_subscriber\t%p\n", subscriber);
+  fclose(fp);
+  return subscriber;
 }
 
 ReturnCode_t DataReader::wait_for_historical_data(
         const Duration_t& max_wait) const
 {
     static_cast<void> (max_wait);
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DataReader::wait_for_historical_data\t%d\n",
+            ReturnCode_t::RETCODE_UNSUPPORTED);
+    fclose(fp);
     return ReturnCode_t::RETCODE_UNSUPPORTED;
     /*
        return impl_->wait_for_historical_data(a_condition);
@@ -473,7 +603,11 @@ TypeSupport DataReader::type()
 
 const TopicDescription* DataReader::get_topicdescription() const
 {
-    return impl_->get_topicdescription();
+  const TopicDescription* topic = impl_->get_topicdescription();
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DataReaderImpl::get_topicdescription\t%p\n", topic);
+  fclose(fp);
+  return topic;
 }
 
 bool DataReader::is_sample_valid(
