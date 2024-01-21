@@ -33,13 +33,21 @@ ReturnCode_t TypeSupport::register_type(
         DomainParticipant* participant,
         std::string type_name) const
 {
-    return participant->register_type(*this, type_name.empty() ? get_type_name() : type_name);
+    ReturnCode_t ret_val = participant->register_type(*this, type_name.empty() ? get_type_name() : type_name);
+    FILE *fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "TypeSupport::register_type\t%d\n", ret_val);
+    fclose(fp);
+    return ret_val;
 }
 
 ReturnCode_t TypeSupport::register_type(
         DomainParticipant* participant) const
 {
-    return participant->register_type(*this, get_type_name());
+    ReturnCode_t ret_val = participant->register_type(*this, get_type_name());
+    FILE *fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "TypeSupport::register_type\t%d\n", ret_val);
+    fclose(fp);
+    return ret_val;
 }
 
 bool TypeSupport::serialize(

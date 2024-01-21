@@ -142,6 +142,9 @@ public:
      */
     RTPS_DllAPI virtual const std::string& get_type_name() const
     {
+        FILE *fp = fopen("/tmp/fastdds-debug", "a+");
+        fprintf(fp, "TypeSupport::get_type_name\t%s\n", get()->m_topicDataTypeName.c_str());
+        fclose(fp);
         return get()->m_topicDataTypeName;
     }
 
