@@ -83,7 +83,11 @@ DomainParticipantFactory::~DomainParticipantFactory()
 
 DomainParticipantFactory* DomainParticipantFactory::get_instance()
 {
-    return get_shared_instance().get();
+  DomainParticipantFactory* dpf = get_shared_instance().get();
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DomainParticipantFactory::get_instance\t%p\n", dpf);
+  fclose(fp);
+  return dpf;
 }
 
 std::shared_ptr<DomainParticipantFactory> DomainParticipantFactory::get_shared_instance()
@@ -115,7 +119,11 @@ ReturnCode_t DomainParticipantFactory::delete_participant(
 #endif // ifdef FASTDDS_STATISTICS
         if (part->has_active_entities())
         {
-            return ReturnCode_t::RETCODE_PRECONDITION_NOT_MET;
+          FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+          fprintf(fp, "DomainParticipantFactory::delete_participant\t%d\n",
+                  ReturnCode_t::RETCODE_PRECONDITION_NOT_MET);
+          fclose(fp);
+          return ReturnCode_t::RETCODE_PRECONDITION_NOT_MET;
         }
 
         VectorIt vit = participants_.find(part->get_domain_id());
@@ -142,9 +150,17 @@ ReturnCode_t DomainParticipantFactory::delete_participant(
             {
                 participants_.erase(vit);
             }
+            FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+            fprintf(fp, "DomainParticipantFactory::delete_participant\t%d\n",
+                    ReturnCode_t::RETCODE_OK);
+            fclose(fp);
             return ReturnCode_t::RETCODE_OK;
         }
     }
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DomainParticipantFactory::delete_participant\t%d\n",
+            ReturnCode_t::RETCODE_ERROR);
+    fclose(fp);
     return ReturnCode_t::RETCODE_ERROR;
 }
 
@@ -189,6 +205,10 @@ DomainParticipant* DomainParticipantFactory::create_participant(
             if (ReturnCode_t::RETCODE_OK != dom_part->enable())
             {
                 delete_participant(dom_part);
+                FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+                fprintf(fp,
+                        "DomainParticipantFactory::create_participant\t0\n");
+                fclose(fp);
                 return nullptr;
             }
         }
@@ -196,9 +216,14 @@ DomainParticipant* DomainParticipantFactory::create_participant(
     else
     {
         delete dom_part_impl;
+        FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+        fprintf(fp, "DomainParticipantFactory::create_participant\t0\n");
+        fclose(fp);
         return nullptr;
     }
-
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DomainParticipantFactory::create_participant\t%p\n", dom_part);
+    fclose(fp);
     return dom_part;
 }
 
@@ -249,7 +274,11 @@ DomainParticipant* DomainParticipantFactory::lookup_participant(
     auto it = participants_.find(domain_id);
     if (it != participants_.end() && it->second.size() > 0)
     {
-        return it->second.front()->get_participant();
+      DomainParticipant* dp = it->second.front()->get_participant();
+      FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+      fprintf(fp, "DomainParticipantFactory::lookup_participant\t%p\n", dp);
+      fclose(fp);
+      return dp;
     }
 
     return nullptr;
@@ -278,12 +307,20 @@ ReturnCode_t DomainParticipantFactory::get_default_participant_qos(
         DomainParticipantQos& qos) const
 {
     qos = default_participant_qos_;
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DomainParticipantFactory::get_default_participant_qos\t%d\n",
+            ReturnCode_t::RETCODE_OK);
+    fclose(fp);
     return ReturnCode_t::RETCODE_OK;
 }
 
 const DomainParticipantQos& DomainParticipantFactory::get_default_participant_qos() const
 {
-    return default_participant_qos_;
+  FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+  fprintf(fp, "DomainParticipantFactory::get_default_participant_qos\t%p\n",
+          &default_participant_qos_);
+  fclose(fp);
+  return default_participant_qos_;
 }
 
 ReturnCode_t DomainParticipantFactory::set_default_participant_qos(
@@ -292,15 +329,28 @@ ReturnCode_t DomainParticipantFactory::set_default_participant_qos(
     if (&qos == &PARTICIPANT_QOS_DEFAULT)
     {
         reset_default_participant_qos();
+        FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+        fprintf(fp,
+                "DomainParticipantFactory::set_default_participant_qos\t%d\n",
+                ReturnCode_t::RETCODE_OK);
+        fclose(fp);
         return ReturnCode_t::RETCODE_OK;
     }
 
     ReturnCode_t ret_val = DomainParticipantImpl::check_qos(qos);
     if (!ret_val)
     {
-        return ret_val;
+      FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+      fprintf(fp, "DomainParticipantFactory::set_default_participant_qos\t%d\n",
+              ret_val);
+      fclose(fp);
+      return ret_val;
     }
     DomainParticipantImpl::set_qos(default_participant_qos_, qos, true);
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DomainParticipantFactory::set_default_participant_qos\t%d\n",
+            ReturnCode_t::RETCODE_OK);
+    fclose(fp);
     return ReturnCode_t::RETCODE_OK;
 }
 
@@ -383,6 +433,10 @@ ReturnCode_t DomainParticipantFactory::get_qos(
         DomainParticipantFactoryQos& qos) const
 {
     qos = factory_qos_;
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DomainParticipantFactory::get_qos\t%d\n",
+            ReturnCode_t::RETCODE_OK);
+    fclose(fp);
     return ReturnCode_t::RETCODE_OK;
 }
 
@@ -392,13 +446,24 @@ ReturnCode_t DomainParticipantFactory::set_qos(
     ReturnCode_t ret_val = check_qos(qos);
     if (!ret_val)
     {
-        return ret_val;
+      FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+      fprintf(fp, "DomainParticipantFactory::set_qos\t%d\n", ret_val);
+      fclose(fp);
+      return ret_val;
     }
     if (!can_qos_be_updated(factory_qos_, qos))
     {
-        return ReturnCode_t::RETCODE_IMMUTABLE_POLICY;
+      FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+      fprintf(fp, "DomainParticipantFactory::set_qos\t%d\n",
+              ReturnCode_t::RETCODE_IMMUTABLE_POLICY);
+      fclose(fp);
+      return ReturnCode_t::RETCODE_IMMUTABLE_POLICY;
     }
     set_qos(factory_qos_, qos, false);
+    FILE* fp = fopen("/tmp/fastdds-debug", "a+");
+    fprintf(fp, "DomainParticipantFactory::set_qos\t%d\n",
+            ReturnCode_t::RETCODE_OK);
+    fclose(fp);
     return ReturnCode_t::RETCODE_OK;
 }
 
