@@ -847,7 +847,7 @@ Publisher* DomainParticipantImpl::create_publisher(const PublisherQos& qos,
     *impl = pubimpl;
   }
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::create_publisher()\t%p\n", pub);
+  fprintf(fp, "DomainParticipantImpl::create_publisher\t%p\n", pub);
   fclose(fp);
   return pub;
 }
@@ -911,7 +911,7 @@ bool DomainParticipantImpl::ignore_publication(const InstanceHandle_t& handle) {
   static_cast<void>(handle);
   EPROSIMA_LOG_ERROR(PARTICIPANT, "Not implemented.");
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::ignore_publication()\t%d\n", false);
+  fprintf(fp, "DomainParticipantImpl::ignore_publication\t%d\n", false);
   fclose(fp);
   return false;
 }
@@ -921,14 +921,14 @@ bool DomainParticipantImpl::ignore_subscription(
   static_cast<void>(handle);
   EPROSIMA_LOG_ERROR(PARTICIPANT, "Not implemented.");
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::ignore_subscription()\t%d\n", false);
+  fprintf(fp, "DomainParticipantImpl::ignore_subscription\t%d\n", false);
   fclose(fp);
   return false;
 }
 
 DomainId_t DomainParticipantImpl::get_domain_id() const {
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::get_domain_id()\t%p\n", &domain_id_);
+  fprintf(fp, "DomainParticipantImpl::get_domain_id\t%p\n", &domain_id_);
   fclose(fp);
   return domain_id_;
 }
@@ -942,7 +942,7 @@ ReturnCode_t DomainParticipantImpl::delete_contained_entities() {
     can_be_deleted = subscriber.second->can_be_deleted();
     if (!can_be_deleted) {
       FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-      fprintf(fp, "DomainParticipantImpl::delete_contained_entities()\t%d\n",
+      fprintf(fp, "DomainParticipantImpl::delete_contained_entities\t%d\n",
               ReturnCode_t::RETCODE_PRECONDITION_NOT_MET);
       fclose(fp);
       return ReturnCode_t::RETCODE_PRECONDITION_NOT_MET;
@@ -955,7 +955,7 @@ ReturnCode_t DomainParticipantImpl::delete_contained_entities() {
     can_be_deleted = publisher.second->can_be_deleted();
     if (!can_be_deleted) {
       FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-      fprintf(fp, "DomainParticipantImpl::delete_contained_entities()\t%d\n",
+      fprintf(fp, "DomainParticipantImpl::delete_contained_entities\t%d\n",
               ReturnCode_t::RETCODE_PRECONDITION_NOT_MET);
       fclose(fp);
 
@@ -969,7 +969,7 @@ ReturnCode_t DomainParticipantImpl::delete_contained_entities() {
     ret_code = subscriber.first->delete_contained_entities();
     if (!ret_code) {
       FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-      fprintf(fp, "DomainParticipantImpl::delete_contained_entities()\t%d\n",
+      fprintf(fp, "DomainParticipantImpl::delete_contained_entities\t%d\n",
               ReturnCode_t::RETCODE_ERROR);
       fclose(fp);
       return ReturnCode_t::RETCODE_ERROR;
@@ -989,7 +989,7 @@ ReturnCode_t DomainParticipantImpl::delete_contained_entities() {
     ret_code = publisher.first->delete_contained_entities();
     if (!ret_code) {
       FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-      fprintf(fp, "DomainParticipantImpl::delete_contained_entities()\t%d\n",
+      fprintf(fp, "DomainParticipantImpl::delete_contained_entities\t%d\n",
               ReturnCode_t::RETCODE_ERROR);
       fclose(fp);
       return ReturnCode_t::RETCODE_ERROR;
@@ -1016,7 +1016,7 @@ ReturnCode_t DomainParticipantImpl::delete_contained_entities() {
     it_topics = topics_.erase(it_topics);
   }
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::delete_contained_entities()\t%d\n",
+  fprintf(fp, "DomainParticipantImpl::delete_contained_entities\t%d\n",
           ReturnCode_t::RETCODE_OK);
   fclose(fp);
   return ReturnCode_t::RETCODE_OK;
@@ -1026,7 +1026,7 @@ ReturnCode_t DomainParticipantImpl::assert_liveliness() {
   fastrtps::rtps::RTPSParticipant* rtps_participant = get_rtps_participant();
   if (rtps_participant == nullptr) {
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-    fprintf(fp, "DomainParticipantImpl::assert_liveliness()\t%d\n",
+    fprintf(fp, "DomainParticipantImpl::assert_liveliness\t%d\n",
             ReturnCode_t::RETCODE_NOT_ENABLED);
     fclose(fp);
     return ReturnCode_t::RETCODE_NOT_ENABLED;
@@ -1035,7 +1035,7 @@ ReturnCode_t DomainParticipantImpl::assert_liveliness() {
   if (rtps_participant->wlp() != nullptr) {
     if (rtps_participant->wlp()->assert_liveliness_manual_by_participant()) {
       FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-      fprintf(fp, "DomainParticipantImpl::assert_liveliness()\t%d\n",
+      fprintf(fp, "DomainParticipantImpl::assert_liveliness\t%d\n",
               ReturnCode_t::RETCODE_OK);
       fclose(fp);
       return ReturnCode_t::RETCODE_OK;
@@ -1045,7 +1045,7 @@ ReturnCode_t DomainParticipantImpl::assert_liveliness() {
                        "Invalid WLP, cannot assert liveliness of participant");
   }
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::assert_liveliness()\t%d\n",
+  fprintf(fp, "DomainParticipantImpl::assert_liveliness\t%d\n",
           ReturnCode_t::RETCODE_ERROR);
   fclose(fp);
   return ReturnCode_t::RETCODE_ERROR;
@@ -1056,7 +1056,7 @@ ReturnCode_t DomainParticipantImpl::set_default_publisher_qos(
   if (&qos == &PUBLISHER_QOS_DEFAULT) {
     reset_default_publisher_qos();
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-    fprintf(fp, "DomainParticipantImpl::set_default_publisher_qos()\t%d\n",
+    fprintf(fp, "DomainParticipantImpl::set_default_publisher_qos\t%d\n",
             ReturnCode_t::RETCODE_OK);
     fclose(fp);
     return ReturnCode_t::RETCODE_OK;
@@ -1070,7 +1070,7 @@ ReturnCode_t DomainParticipantImpl::set_default_publisher_qos(
   }
   PublisherImpl::set_qos(default_pub_qos_, qos, true);
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::set_default_publisher_qos()\t%d\n",
+  fprintf(fp, "DomainParticipantImpl::set_default_publisher_qos\t%d\n",
           ReturnCode_t::RETCODE_OK);
   fclose(fp);
   return ReturnCode_t::RETCODE_OK;
@@ -1086,7 +1086,7 @@ void DomainParticipantImpl::reset_default_publisher_qos() {
 
 const PublisherQos& DomainParticipantImpl::get_default_publisher_qos() const {
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::get_default_publisher_qos()\t%p\n",
+  fprintf(fp, "DomainParticipantImpl::get_default_publisher_qos\t%p\n",
           &default_pub_qos_);
   fclose(fp);
   return default_pub_qos_;
@@ -1110,7 +1110,7 @@ ReturnCode_t DomainParticipantImpl::set_default_subscriber_qos(
   if (&qos == &SUBSCRIBER_QOS_DEFAULT) {
     reset_default_subscriber_qos();
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-    fprintf(fp, "DomainParticipantImpl::set_default_subscriber_qos()\t%d\n",
+    fprintf(fp, "DomainParticipantImpl::set_default_subscriber_qos\t%d\n",
             ReturnCode_t::RETCODE_OK);
     fclose(fp);
     return ReturnCode_t::RETCODE_OK;
@@ -1123,7 +1123,7 @@ ReturnCode_t DomainParticipantImpl::set_default_subscriber_qos(
   }
   SubscriberImpl::set_qos(default_sub_qos_, qos, true);
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::set_default_subscriber_qos()\t%d\n",
+  fprintf(fp, "DomainParticipantImpl::set_default_subscriber_qos\t%d\n",
           ReturnCode_t::RETCODE_OK);
   fclose(fp);
   return ReturnCode_t::RETCODE_OK;
@@ -1139,7 +1139,7 @@ void DomainParticipantImpl::reset_default_subscriber_qos() {
 
 const SubscriberQos& DomainParticipantImpl::get_default_subscriber_qos() const {
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::get_default_subscriber_qos()\t%p\n",
+  fprintf(fp, "DomainParticipantImpl::get_default_subscriber_qos\t%p\n",
           &default_sub_qos_);
   fclose(fp);
   return default_sub_qos_;
@@ -1162,7 +1162,7 @@ ReturnCode_t DomainParticipantImpl::set_default_topic_qos(const TopicQos& qos) {
   if (&qos == &TOPIC_QOS_DEFAULT) {
     reset_default_topic_qos();
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-    fprintf(fp, "DomainParticipantImpl::set_default_topic_qos()\t%d\n",
+    fprintf(fp, "DomainParticipantImpl::set_default_topic_qos\t%d\n",
             ReturnCode_t::RETCODE_OK);
     fclose(fp);
     return ReturnCode_t::RETCODE_OK;
@@ -1187,7 +1187,7 @@ void DomainParticipantImpl::reset_default_topic_qos() {
 
 const TopicQos& DomainParticipantImpl::get_default_topic_qos() const {
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::get_default_topic_qos()\t%p\n",
+  fprintf(fp, "DomainParticipantImpl::get_default_topic_qos\t%p\n",
           &default_topic_qos_);
   fclose(fp);
   return default_topic_qos_;
@@ -1233,7 +1233,7 @@ bool DomainParticipantImpl::contains_entity(const InstanceHandle_t& handle,
     std::lock_guard<std::mutex> lock(mtx_pubs_);
     if (publishers_by_handle_.find(handle) != publishers_by_handle_.end()) {
       FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-      fprintf(fp, "DomainParticipantImpl::contains_entity()\t%d\n", true);
+      fprintf(fp, "DomainParticipantImpl::contains_entity\t%d\n", true);
       fclose(fp);
       return true;
     }
@@ -1244,7 +1244,7 @@ bool DomainParticipantImpl::contains_entity(const InstanceHandle_t& handle,
     std::lock_guard<std::mutex> lock(mtx_subs_);
     if (subscribers_by_handle_.find(handle) != subscribers_by_handle_.end()) {
       FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-      fprintf(fp, "DomainParticipantImpl::contains_entity()\t%d\n", true);
+      fprintf(fp, "DomainParticipantImpl::contains_entity\t%d\n", true);
       fclose(fp);
       return true;
     }
@@ -1255,7 +1255,7 @@ bool DomainParticipantImpl::contains_entity(const InstanceHandle_t& handle,
     std::lock_guard<std::mutex> lock(mtx_topics_);
     if (topics_by_handle_.find(handle) != topics_by_handle_.end()) {
       FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-      fprintf(fp, "DomainParticipantImpl::contains_entity()\t%d\n", true);
+      fprintf(fp, "DomainParticipantImpl::contains_entity\t%d\n", true);
       fclose(fp);
       return true;
     }
@@ -1268,7 +1268,7 @@ bool DomainParticipantImpl::contains_entity(const InstanceHandle_t& handle,
       for (auto pit : publishers_) {
         if (pit.second->contains_entity(handle)) {
           FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-          fprintf(fp, "DomainParticipantImpl::contains_entity()\t%d\n", true);
+          fprintf(fp, "DomainParticipantImpl::contains_entity\t%d\n", true);
           fclose(fp);
           return true;
         }
@@ -1281,7 +1281,7 @@ bool DomainParticipantImpl::contains_entity(const InstanceHandle_t& handle,
       for (auto sit : subscribers_) {
         if (sit.second->contains_entity(handle)) {
           FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-          fprintf(fp, "DomainParticipantImpl::contains_entity()\t%d\n", true);
+          fprintf(fp, "DomainParticipantImpl::contains_entity\t%d\n", true);
           fclose(fp);
           return true;
         }
@@ -1289,7 +1289,7 @@ bool DomainParticipantImpl::contains_entity(const InstanceHandle_t& handle,
     }
   }
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::contains_entity()\t%d\n", false);
+  fprintf(fp, "DomainParticipantImpl::contains_entity\t%d\n", false);
   fclose(fp);
 
   return false;
@@ -1306,7 +1306,7 @@ ReturnCode_t DomainParticipantImpl::get_current_time(
   current_time.seconds = static_cast<int32_t>(seconds.count());
   current_time.nanosec = static_cast<uint32_t>(nanos.count());
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::get_current_time()\t%d\n",
+  fprintf(fp, "DomainParticipantImpl::get_current_time\t%d\n",
           ReturnCode_t::RETCODE_OK);
   fclose(fp);
   return ReturnCode_t::RETCODE_OK;
@@ -1355,7 +1355,7 @@ Subscriber* DomainParticipantImpl::create_subscriber(
     (void)ret_subscriber_enable;
   }
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::create_subscriber()\t%p\n", sub);
+  fprintf(fp, "DomainParticipantImpl::create_subscriber\t%p\n", sub);
   fclose(fp);
   return sub;
 }
@@ -1391,7 +1391,7 @@ Topic* DomainParticipantImpl::create_topic(const std::string& topic_name,
     EPROSIMA_LOG_ERROR(PARTICIPANT,
                        "Type : " << type_name << " Not Registered");
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-    fprintf(fp, "DomainParticipantImpl::create_topic()\t%d\n", nullptr);
+    fprintf(fp, "DomainParticipantImpl::create_topic\t%d\n", nullptr);
     fclose(fp);
     return nullptr;
   }
@@ -1399,7 +1399,7 @@ Topic* DomainParticipantImpl::create_topic(const std::string& topic_name,
   if (!TopicImpl::check_qos_including_resource_limits(qos, type_support)) {
     EPROSIMA_LOG_ERROR(PARTICIPANT, "TopicQos inconsistent or not supported");
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-    fprintf(fp, "DomainParticipantImpl::create_topic()\t%d\n", nullptr);
+    fprintf(fp, "DomainParticipantImpl::create_topic\t%d\n", nullptr);
     fclose(fp);
     return nullptr;
   }
@@ -1414,7 +1414,7 @@ Topic* DomainParticipantImpl::create_topic(const std::string& topic_name,
     EPROSIMA_LOG_ERROR(PARTICIPANT,
                        "Topic with name : " << topic_name << " already exists");
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-    fprintf(fp, "DomainParticipantImpl::create_topic()\t%d\n", nullptr);
+    fprintf(fp, "DomainParticipantImpl::create_topic\t%d\n", nullptr);
     fclose(fp);
     return nullptr;
   }
@@ -1441,7 +1441,7 @@ Topic* DomainParticipantImpl::create_topic(const std::string& topic_name,
 
   cond_topics_.notify_all();
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::create_topic()\t%p\n", topic);
+  fprintf(fp, "DomainParticipantImpl::create_topic\t%p\n", topic);
   fclose(fp);
   return topic;
 }
@@ -1469,7 +1469,7 @@ TopicDescription* DomainParticipantImpl::lookup_topicdescription(
   auto it = topics_.find(topic_name);
   if (it != topics_.end()) {
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-    fprintf(fp, "DomainParticipantImpl::lookup_topicdescription()\t%p\n",
+    fprintf(fp, "DomainParticipantImpl::lookup_topicdescription\t%p\n",
             it->second->get_topic()->get_topic());
     fclose(fp);
     return it->second->get_topic()->get_topic();
@@ -1478,13 +1478,13 @@ TopicDescription* DomainParticipantImpl::lookup_topicdescription(
   auto filtered_it = filtered_topics_.find(topic_name);
   if (filtered_it != filtered_topics_.end()) {
     FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-    fprintf(fp, "DomainParticipantImpl::lookup_topicdescription()\t%p\n",
+    fprintf(fp, "DomainParticipantImpl::lookup_topicdescription\t%p\n",
             filtered_it->second.get());
     fclose(fp);
     return filtered_it->second.get();
   }
   FILE* fp = fopen("/tmp/fastdds-debug", "a+");
-  fprintf(fp, "DomainParticipantImpl::lookup_topicdescription()\t%d\n",
+  fprintf(fp, "DomainParticipantImpl::lookup_topicdescription\t%d\n",
           nullptr);
   fclose(fp);
 
